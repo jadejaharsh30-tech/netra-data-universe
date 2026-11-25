@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-25T18:05:22+00:00",
+ "updated": "2026-11-25T18:07:05+00:00",
  "repo": "jadejaharsh30-tech/netra-data-universe",
  "agents": [
   {
@@ -235,6 +235,7 @@
    "task_default": "Checking dspim.com for a new Netra",
    "requires_pc": true,
    "role": "Finds each new DSP Netra, files it in the year folder on your PC, extracts every number, updates 'Used in Netra' and latest readings, and proposes new metrics.",
+   "trigger_id": "trig_01Qs3iwKeNCqnk84meAvF1X4",
    "status": {
     "id": "netra_scout",
     "state": "pending"
@@ -259,6 +260,7 @@
    ],
    "task_default": "Checking every agent's health",
    "role": "Reads every agent's status, investigates failures and stale data, fixes worker code when a source changes, cross-checks key numbers against the latest Netra, and writes a daily note.",
+   "trigger_id": "trig_01EqajeX8EzoijFyfwaW59BE",
    "status": {
     "id": "supervisor",
     "state": "pending"
