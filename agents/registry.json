@@ -1,0 +1,226 @@
+{
+ "repo": "jadejaharsh30-tech/netra-data-universe",
+ "agents": [
+  {
+   "id": "valuation",
+   "name": "Valuation",
+   "runner": "github-actions",
+   "phase": "live",
+   "workflow": "valuation.yml",
+   "cron": [
+    "37 13 * * 1-5",
+    "23 2 * * 2-6"
+   ],
+   "schedule": "Weekdays 19:07 IST, catch-up 07:53 IST",
+   "max_age_hours": 40,
+   "sections": [
+    "01",
+    "02",
+    "03",
+    "04",
+    "16"
+   ],
+   "datasets": [
+    "india_co_valuations_monthly",
+    "india_co_eps_yearly",
+    "valuation_snapshot"
+   ],
+   "sources": [
+    "NSE ind_close_all daily file (nsearchives.nseindia.com)"
+   ],
+   "task_default": "Fetching NSE index close files",
+   "role": "P/E, P/B, dividend yield, EPS, ROE and percentiles for 24 Nifty indices; India Co. EPS by CY/FY with the 2021 consolidation splice."
+  },
+  {
+   "id": "flows",
+   "name": "Flows",
+   "runner": "github-actions",
+   "phase": "live",
+   "workflow": "flows.yml",
+   "cron": [
+    "41 3 * * 1-6"
+   ],
+   "schedule": "Mon–Sat 09:11 IST",
+   "max_age_hours": 50,
+   "sections": [
+    "07",
+    "22"
+   ],
+   "datasets": [
+    "fpi_flows_monthly"
+   ],
+   "sources": [
+    "NSDL FPI Yearwise report (fpi.nsdl.co.in)"
+   ],
+   "task_default": "Reading NSDL FPI report",
+   "role": "FPI net equity and total flows by month in USD and INR; 3/12/24-month rolling sums with z-scores and percentiles."
+  },
+  {
+   "id": "external",
+   "name": "External & Rupee",
+   "runner": "github-actions",
+   "phase": "live",
+   "workflow": "external.yml",
+   "cron": [
+    "53 1 * * 1-5"
+   ],
+   "schedule": "Weekdays 07:23 IST",
+   "max_age_hours": 80,
+   "sections": [
+    "15",
+    "12"
+   ],
+   "datasets": [
+    "rupee_rates_inflation_monthly",
+    "em_reer_bis_monthly",
+    "em_fx_volatility"
+   ],
+   "sources": [
+    "FRED (BIS REER/NEER, USD/INR, OECD India 10Y, US CPI, TIPS)"
+   ],
+   "task_default": "Pulling FRED series",
+   "role": "USD/INR, BIS REER/NEER for India and EM peers, India–US 10Y spread, real rates, inflation differential, EM FX volatility."
+  },
+  {
+   "id": "netra_scout",
+   "name": "Netra Scout",
+   "runner": "claude",
+   "phase": "live",
+   "cron": [
+    "17 6 5-9 * *"
+   ],
+   "schedule": "5th–9th of each month, 11:47 IST, until the new edition is found",
+   "max_age_hours": 960,
+   "sections": [],
+   "datasets": [],
+   "sources": [
+    "dspim.com latest literature (via your Chrome)"
+   ],
+   "task_default": "Checking dspim.com for a new Netra",
+   "requires_pc": true,
+   "role": "Finds each new DSP Netra, files it in the year folder on your PC, extracts every number, updates 'Used in Netra' and latest readings, and proposes new metrics."
+  },
+  {
+   "id": "supervisor",
+   "name": "Supervisor (Duty Analyst)",
+   "runner": "claude",
+   "phase": "live",
+   "cron": [
+    "29 14 * * *"
+   ],
+   "schedule": "Daily 19:59 IST, and on call",
+   "max_age_hours": 36,
+   "sections": [],
+   "datasets": [],
+   "sources": [
+    "status/ in this repo, GitHub Actions logs"
+   ],
+   "task_default": "Checking every agent's health",
+   "role": "Reads every agent's status, investigates failures and stale data, fixes worker code when a source changes, cross-checks key numbers against the latest Netra, and writes a daily note."
+  },
+  {
+   "id": "ownership",
+   "name": "Ownership & Supply",
+   "runner": "github-actions",
+   "phase": "planned",
+   "sections": [
+    "06"
+   ],
+   "schedule": "Weekly + quarterly",
+   "sources": [
+    "NSE shareholding patterns, bulk/block deals, SAST/PIT disclosures"
+   ],
+   "role": "Promoter/FPI/DII/retail ownership, promoter selling, insider trades, IPO/QIP/OFS supply."
+  },
+  {
+   "id": "india_macro",
+   "name": "India Macro",
+   "runner": "github-actions",
+   "phase": "planned",
+   "sections": [
+    "10",
+    "11",
+    "14"
+   ],
+   "schedule": "On release dates",
+   "sources": [
+    "MOSPI eSankhyiki API, RBI DBIE, GST portal, CGA"
+   ],
+   "role": "GDP, CPI, IIP, PMI, GST, core sector, fiscal, capex cycle."
+  },
+  {
+   "id": "rates",
+   "name": "Rates & Credit",
+   "runner": "github-actions",
+   "phase": "planned",
+   "sections": [
+    "13"
+   ],
+   "schedule": "Weekly",
+   "sources": [
+    "RBI WSS/DBIE, CCIL, FBIL"
+   ],
+   "role": "G-sec curve, liquidity, bank credit and deposits, M3, CP/CD rates."
+  },
+  {
+   "id": "global",
+   "name": "Global & US",
+   "runner": "github-actions",
+   "phase": "planned",
+   "sections": [
+    "17",
+    "18",
+    "19",
+    "20"
+   ],
+   "schedule": "Weekly",
+   "datasets": [
+    "us_debt_stack_quarterly",
+    "us_rates_liquidity_monthly"
+   ],
+   "sources": [
+    "FRED, BIS, ECB, MSCI factsheets"
+   ],
+   "role": "US debt stack, yields, credit spreads, dollar, Fed balance sheet, global/EM equities, AI capex."
+  },
+  {
+   "id": "commodities",
+   "name": "Commodities",
+   "runner": "github-actions",
+   "phase": "planned",
+   "sections": [
+    "21"
+   ],
+   "schedule": "Monthly",
+   "datasets": [
+    "gold_silver_fair_value_monthly"
+   ],
+   "sources": [
+    "World Bank Pink Sheet, ECB M2, FRED M2, WGC"
+   ],
+   "role": "Gold and silver fair value (money-supply model), oil, copper, gold/copper ratio."
+  },
+  {
+   "id": "regime",
+   "name": "Market Regime",
+   "runner": "github-actions",
+   "phase": "planned",
+   "sections": [
+    "05",
+    "08",
+    "09"
+   ],
+   "schedule": "Daily",
+   "datasets": [
+    "market_structure_signals_monthly",
+    "nifty_below_200dma_streaks",
+    "nifty_negative_month_streaks",
+    "nifty_negative_week_streaks"
+   ],
+   "sources": [
+    "NSE/niftyindices TRI, India VIX"
+   ],
+   "role": "Breadth, size ratios, 200-DMA and negative-streak base rates, VIX, leverage and sentiment."
+  }
+ ]
+}

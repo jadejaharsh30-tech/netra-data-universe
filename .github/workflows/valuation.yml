@@ -1,0 +1,42 @@
+name: "Agent · Valuation"
+on:
+  schedule:
+    - cron: "37 13 * * 1-5"
+    - cron: "23 2 * * 2-6"
+  push:
+    branches: [main]
+    paths: ["workers/valuation.py", "workers/common.py", "requirements.txt"]
+  workflow_dispatch:
+    inputs:
+      reason:
+        description: "Why are you running it? (shows in the Control Room)"
+        required: false
+        default: "manual run"
+permissions:
+  contents: write
+concurrency:
+  group: repo-writer
+  cancel-in-progress: false
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+      - run: pip install -q -r requirements.txt
+      - name: Mark running
+        run: |
+          python -m workers.status start valuation "Starting (${{ github.event_name }}: ${{ inputs.reason || 'schedule' }})"
+          python -m workers.catalog
+          bash scripts/commit.sh "valuation: running"
+      - name: Run agent
+        run: python -m workers.valuation
+      - name: Publish
+        if: always()
+        run: |
+          python -m workers.catalog
+          bash scripts/commit.sh "valuation: run ${{ github.run_id }}"

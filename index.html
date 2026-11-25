@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Netra Data Universe</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* VOICE: a research desk's instrument panel — exact, calm, numbers first.
+   IDEA: an engineering datasheet for the Indian market: one strip, dense exact panels on a shared baseline.
+   PICTURE: the India Co. earnings line (or any KPI you pick) drawn large; in the Control Room, the agent board itself.
+   COLOUR and TYPE: cobalt title strip, white/black, pale cobalt zones; Space Grotesk 600 + Inter.
+   LAYOUT: strip + view tabs, finding title, KPI row, big chart, two exact tables, then the metric browser. */
+:root{color-scheme:light dark;--bg:light-dark(#fff,#0a0d18);--ink:light-dark(#0b0d12,#e9edf8);--mute:light-dark(#566079,#97a1bd);--zone:light-dark(#eef2ff,#121a33);--line:light-dark(#d9dff0,#232d4d);--co:#1240e0;--co2:light-dark(#1240e0,#7d9bff);--ok:light-dark(#0a7d5c,#3fcf9d);--bad:light-dark(#c62828,#ff7a7a);--warn:light-dark(#b45309,#f6ad55);--card:light-dark(#fff,#0f1528)}
+:root[data-theme=light]{color-scheme:light}:root[data-theme=dark]{color-scheme:dark}
+*{box-sizing:border-box;min-width:0}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 Inter,system-ui,sans-serif;overflow-x:clip}
+h1,h2,h3,.num{font-family:"Space Grotesk",Inter,sans-serif;font-weight:600}
+h1{font-size:clamp(30px,4.4vw,48px);line-height:1.05;margin:0 0 10px;text-wrap:balance;letter-spacing:-.01em}
+h2{font-size:22px;margin:0 0 12px;line-height:1.2}h3{font-size:17px;margin:0}
+a{color:var(--co2)}
+.band{padding:clamp(22px,3.4vw,48px) max(5vw,16px)}.wrap{max-width:1240px;margin:0 auto}
+.strip{background:var(--co);color:#fff;padding:0 max(5vw,16px)}.strip .wrap{display:flex;align-items:center;gap:18px;min-height:56px;flex-wrap:wrap}
+.brand{font:700 18px "Space Grotesk",sans-serif;margin-right:auto}
+.tabs{display:flex;gap:4px}.tabs a{color:#fff;text-decoration:none;padding:10px 14px;border-radius:8px;font-weight:500;min-height:44px;display:flex;align-items:center}
+.tabs a[aria-current=page]{background:rgba(255,255,255,.18)}.tabs a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid #ffb800;outline-offset:2px}
+.stamp{font-size:13px;opacity:.85}
+.lede{color:var(--mute);max-width:70ch;margin:0}
+.kpis{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:1px;background:var(--line);border:1px solid var(--line);margin-top:22px}
+.kpi{background:var(--card);border:0;text-align:left;padding:14px 14px 10px;cursor:pointer;color:inherit;font:inherit;min-height:44px}
+.kpi[aria-pressed=true]{background:var(--zone);box-shadow:inset 0 -3px 0 var(--co2)}
+.kpi .l{font-size:13px;color:var(--mute)}.kpi .v{font:600 clamp(22px,2.4vw,30px)/1.1 "Space Grotesk",sans-serif;margin:4px 0 2px;white-space:nowrap}
+.kpi .d{font-size:13px;white-space:nowrap}.kpi svg{display:block;width:100%;height:30px;margin-top:6px}
+.up{color:var(--ok)}.dn{color:var(--bad)}
+.chartbox{margin-top:18px;border:1px solid var(--line);padding:16px;background:var(--card)}
+.chead{display:flex;gap:12px;align-items:baseline;flex-wrap:wrap}.chead .src{margin-left:auto;font-size:13px;color:var(--mute)}
+.fig{position:relative;min-height:340px}.fig>svg{position:absolute;inset:0;width:100%;height:100%}
+.tip{position:absolute;pointer-events:none;background:var(--ink);color:var(--bg);font-size:13px;padding:4px 8px;border-radius:4px;white-space:nowrap;transform:translate(-50%,-120%);display:none}
+.two{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:24px}
+.zone{background:var(--zone)}
+table{border-collapse:collapse;width:100%;font-size:14px}th,td{padding:7px 8px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+th{font-weight:600;color:var(--mute);font-size:13px}td.n,th.n{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.bar{height:8px;background:var(--line);border-radius:4px;min-width:60px}.bar i{display:block;height:100%;border-radius:4px;background:var(--co2)}
+.tools{display:flex;gap:10px;flex-wrap:wrap;margin:6px 0 14px}
+input,select{font:16px Inter,sans-serif;padding:10px 12px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--ink);min-height:44px}
+input{flex:1 1 260px}
+.pill{display:inline-block;font-size:12px;font-weight:600;padding:2px 8px;border-radius:99px;white-space:nowrap;border:1px solid currentColor}
+.s-live,.s-healthy{color:var(--ok)}.s-snapshot,.s-waiting{color:var(--warn)}.s-recipe,.s-planned{color:var(--mute)}.s-running{color:var(--co2)}.s-failed,.s-stuck{color:var(--bad)}.s-stale{color:var(--warn)}
+tr.m{cursor:pointer}tr.m:hover td{background:var(--zone)}
+tr.det td{background:var(--zone);padding:14px}
+.det dl{display:grid;grid-template-columns:9em minmax(0,1fr);gap:4px 14px;margin:0 0 10px;font-size:14px}.det dt{color:var(--mute)}.det dd{margin:0}
+.count{font-size:13px;color:var(--mute)}
+.board{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px}
+.agent{background:var(--card);border:1px solid var(--line);padding:16px;display:flex;flex-direction:column;gap:10px}
+.agent.live{border-top:4px solid var(--co2)}.agent .top{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.agent .runner{font-size:12px;color:var(--mute);margin-left:auto}
+.now{font-size:14px;background:var(--zone);padding:8px 10px;border-radius:6px}
+.facts{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:4px 12px;font-size:13px}.facts b{display:block;font-weight:500;font-size:14px}
+.facts span{color:var(--mute)}
+.err{font-size:13px;color:var(--bad);background:color-mix(in srgb,var(--bad) 9%,transparent);padding:8px 10px;border-radius:6px;overflow-wrap:anywhere}
+.runs{display:flex;gap:3px;flex-wrap:wrap}.runs a,.runs i{width:12px;height:16px;border-radius:2px;background:var(--line);display:block}
+.runs .ok{background:var(--ok)}.runs .failed{background:var(--bad)}
+.acts{display:flex;gap:8px;flex-wrap:wrap;margin-top:auto}
+.btn{display:inline-flex;align-items:center;min-height:44px;padding:0 14px;border-radius:8px;border:1px solid var(--co2);color:var(--co2);text-decoration:none;font-weight:500;background:none;font-size:14px;cursor:pointer}
+.btn.p{background:var(--co);color:#fff;border-color:var(--co)}
+.sum{display:flex;gap:1px;background:var(--line);border:1px solid var(--line);flex-wrap:wrap;margin:18px 0 24px}
+.sum div{background:var(--card);padding:12px 16px;flex:1 1 120px}.sum b{font:600 28px "Space Grotesk",sans-serif;display:block}
+.feed{list-style:none;margin:0;padding:0}.feed li{padding:9px 0;border-bottom:1px solid var(--line);font-size:14px;display:grid;grid-template-columns:8.5em minmax(0,1fr);gap:10px}
+.feed time{color:var(--mute);font-size:13px}
+.note{font-size:13px;color:var(--mute)}
+[hidden]{display:none!important}
+pre,.scroll{overflow-x:auto}
+@media(max-width:1000px){.kpis{grid-template-columns:repeat(3,minmax(0,1fr))}.two{grid-template-columns:minmax(0,1fr)}}
+@media(max-width:600px){.kpis{grid-template-columns:repeat(2,minmax(0,1fr))}.fig{min-height:260px}table{font-size:13px}.stack thead{display:none}.stack tr{display:grid;padding-block:10px}.stack td{display:flow-root;border:0;padding:3px 0;padding-inline-start:8em;text-align:start}.stack td::before{content:attr(data-l);float:inline-start;width:7.5em;margin-inline-start:-8em;white-space:normal;color:var(--mute)}.stack td:empty{display:none}.feed li{grid-template-columns:minmax(0,1fr)}}
+@media(prefers-reduced-motion:no-preference){.s-running.pill{animation:pulse 1.4s ease-in-out infinite}@keyframes pulse{50%{opacity:.45}}}
+</style><script>new MutationObserver(()=>{for(const c of document.querySelectorAll('.stack td:not([data-l])')){let i=0,p=c;while(p=p.previousElementSibling)i+=p.colSpan;c.dataset.l=c.closest('table').rows[0].cells[i]?.textContent||''}}).observe(document,{childList:true,subtree:true})</script></head><body>
+<header class="strip"><div class="wrap"><span class="brand">Netra Data Universe</span>
+<nav class="tabs" aria-label="Views"><a href="#universe" id="t-universe">Data Universe</a><a href="#control-room" id="t-control">Control Room</a></nav>
+<span class="stamp" id="stamp">Loading…</span></div></header>
+
+<main id="v-universe">
+<section class="band"><div class="wrap">
+<h1 id="finding">India Co. at a glance</h1>
+<p class="lede" id="lede">The macro, earnings and flow numbers behind DSP's Netra, kept current by a crew of data agents.</p>
+<div class="kpis" id="kpis" role="group" aria-label="Headline numbers — pick one to chart"></div>
+<div class="chartbox"><div class="chead"><h2 id="ctitle">India Co. EPS</h2><span class="src" id="csrc"></span></div>
+<div class="fig" id="main"><svg aria-hidden="true"></svg><div class="tip"></div></div>
+<p class="note" id="cnote"></p></div>
+</div></section>
+
+<section class="band zone"><div class="wrap two">
+<div><h2>India Co. EPS by year</h2><p class="note" id="epsnote"></p>
+<div class="scroll"><table id="epsT"><thead><tr><th>Period</th><th class="n">EPS</th><th class="n">Growth</th><th class="n">P/E</th><th class="n">ROE</th></tr></thead><tbody></tbody></table></div></div>
+<div><h2>24 indices, latest trading day</h2><p class="note" id="snapnote"></p>
+<div class="scroll"><table id="snapT"><thead><tr><th>Index</th><th class="n">P/E</th><th>P/E vs own history</th><th class="n">10Y median</th><th class="n">P/B</th><th class="n">ROE</th><th class="n">EPS YoY</th></tr></thead><tbody></tbody></table></div></div>
+</div></section>
+
+<section class="band"><div class="wrap">
+<h2>The metric universe</h2>
+<p class="lede">Every number found across 65 Netra editions and peer chartbooks: what it is, where to get it free, its traps, and which agent keeps it. <span class="pill s-live">live</span> refreshed by an agent · <span class="pill s-snapshot">snapshot</span> starter data, agent planned · <span class="pill s-recipe">recipe</span> sourcing recipe only.</p>
+<div class="tools"><input id="q" type="search" placeholder="Search metrics, sources, gotchas…" aria-label="Search metrics">
+<select id="fsec" aria-label="Section"><option value="">All sections</option></select>
+<select id="fst" aria-label="Status"><option value="">Any status</option><option>live</option><option>snapshot</option><option>recipe</option></select>
+<select id="fown" aria-label="Agent"><option value="">Any agent</option></select></div>
+<p class="count" id="mcount"></p>
+<table class="stack" id="mT"><thead><tr><th>Metric</th><th>Latest reading</th><th>Agent</th><th>Status</th><th>Frequency</th></tr></thead><tbody></tbody></table>
+</div></section>
+</main>
+
+<main id="v-control" hidden>
+<section class="band"><div class="wrap">
+<h1 id="cfind">Agent Control Room</h1>
+<p class="lede">Each agent owns one slice of the universe. GitHub Actions agents fetch and compute on a schedule; Claude agents read, judge and repair. Every run writes its status here.</p>
+<div class="sum" id="sum"></div>
+<div class="board" id="board"></div>
+</div></section>
+<section class="band zone"><div class="wrap two">
+<div><h2>Activity</h2><ul class="feed" id="feed"></ul></div>
+<div><h2>Run history</h2><div class="scroll"><table id="runT"><thead><tr><th>Finished</th><th>Agent</th><th>Outcome</th><th>Trigger</th><th class="n">Rows</th><th>Note</th></tr></thead><tbody></tbody></table></div></div>
+</div></section>
+</main>
+<footer class="band"><div class="wrap note">Data from public sources: NSE, NSDL, FRED (BIS, OECD), World Bank, ECB. Derived figures for research only; not investment advice. Index levels and valuations © their publishers.</div></footer>
+
+<script>{
+const $=s=>document.querySelector(s);
+const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const num=(v,d=1)=>v==null?'—':Number(v).toLocaleString('en-IN',{minimumFractionDigits:d,maximumFractionDigits:d});
+const sgn=(v,d=1,u='%')=>v==null?'—':(v>0?'+':'')+num(v,d)+u;
+const ago=t=>{if(!t)return'never';const s=(Date.now()-Date.parse(t))/1e3;if(s<0)return'in '+dur(-s);return dur(s)+' ago'};
+const until=t=>{if(!t)return'—';const s=(Date.parse(t)-Date.now())/1e3;return s<0?'due':'in '+dur(s)};
+const dur=s=>s<90?Math.round(s)+'s':s<5400?Math.round(s/60)+' min':s<172800?Math.round(s/3600)+' h':Math.round(s/86400)+' d';
+const when=t=>t?new Date(t).toLocaleString('en-IN',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'}):'—';
+const nm=s=>String(s).toLowerCase().replace(/\b\w/g,c=>c.toUpperCase()).replace(/\b(It|Fmcg|Cpse|Psu|Ew)\b/g,w=>w.toUpperCase()).replace('Equal Weight','EW');
+const get=p=>fetch(p+'?v='+Date.now(),{cache:'no-store'}).then(r=>{if(!r.ok)throw new Error(p+' '+r.status);return r.json()});
+let CAT,SUM,HEAD,AG={},pick='eps';
+const fmtK=(k,v)=>k.unit==='₹'?(k.id==='usdinr'?'₹'+num(v,2):'₹'+num(v,0)):k.unit==='x'?num(v,2)+'x':k.unit==='%'?num(v,1)+'%':k.unit==='$bn'?(v<0?'−':'+')+'$'+num(Math.abs(v),1)+'bn':num(v,1);
+const subK=(k,p)=>{const s=p[2];if(s==null)return'';if(/pctile/.test(k.sub)){const n=Math.round(s),f=n%100>=11&&n%100<=13?'th':({1:'st',2:'nd',3:'rd'}[n%10]||'th');return n+f+' pctile of history'}return sgn(s)+' YoY'};
+
+function spark(svg,pts){const W=200,H=30,v=pts.slice(-120).map(p=>p[1]);const lo=Math.min(...v),hi=Math.max(...v)||1;
+  svg.setAttribute('viewBox',`0 0 ${W} ${H}`);svg.setAttribute('preserveAspectRatio','none');
+  svg.innerHTML=`<polyline fill="none" stroke="currentColor" stroke-width="1.5" vector-effect="non-scaling-stroke" points="${v.map((y,i)=>(i/(v.length-1)*W).toFixed(1)+','+(H-2-(y-lo)/(hi-lo||1)*(H-4)).toFixed(1)).join(' ')}"/>`}
+
+const charts=new Map();
+function line(box,pts,opt={}){const svg=box.querySelector('svg'),tip=box.querySelector('.tip');
+  const draw=()=>{const W=svg.clientWidth,H=svg.clientHeight;if(!W||!pts.length)return;const sm=W<520,L=sm?40:56,R=12,T=12,B=28;
+    const ys=pts.map(p=>p[1]);let lo=Math.min(...ys),hi=Math.max(...ys);const pad=(hi-lo)*.06||1,pos=lo>=0;lo-=pad;hi+=pad;if(pos&&lo<0)lo=0;
+    const x=i=>L+i/(pts.length-1||1)*(W-L-R),y=v=>T+(1-(v-lo)/(hi-lo))*(H-T-B);
+    const step=(hi-lo)/4;let g='';for(let k=0;k<=4;k++){const v=lo+step*k;g+=`<line x1="${L}" x2="${W-R}" y1="${y(v)}" y2="${y(v)}" stroke="var(--line)"/><text x="${L-6}" y="${y(v)+4}" text-anchor="end" font-size="12" fill="var(--mute)">${esc(num(v,Math.abs(hi-lo)<20?1:0))}</text>`}
+    const years=[...new Set(pts.map(p=>p[0].slice(0,4)))],every=Math.ceil(years.length/(sm?4:8));let xt='';
+    years.forEach((yr,j)=>{if(j%every)return;const i=pts.findIndex(p=>p[0].startsWith(yr));xt+=`<text x="${x(i)}" y="${H-8}" font-size="12" text-anchor="middle" fill="var(--mute)">${esc(yr)}</text>`});
+    const zero=lo<0&&hi>0?`<line x1="${L}" x2="${W-R}" y1="${y(0)}" y2="${y(0)}" stroke="var(--mute)" stroke-dasharray="3 3"/>`:'';
+    const d=pts.map((p,i)=>(i?'L':'M')+x(i).toFixed(1)+' '+y(p[1]).toFixed(1)).join('');
+    const area=`M${x(0)} ${y(Math.max(lo,Math.min(0,hi)))}`+d.replace(/^M/,'L')+`L${x(pts.length-1)} ${y(Math.max(lo,Math.min(0,hi)))}Z`;
+    const last=pts[pts.length-1];
+    svg.innerHTML=g+xt+zero+`<path d="${area}" fill="var(--co2)" opacity=".08"/><path d="${d}" fill="none" stroke="var(--co2)" stroke-width="2"/><circle cx="${x(pts.length-1)}" cy="${y(last[1])}" r="4" fill="var(--co2)"/><line id="hv" y1="${T}" y2="${H-B}" stroke="var(--ink)" opacity="0" />`;
+    svg.onpointermove=e=>{const r=svg.getBoundingClientRect(),i=Math.max(0,Math.min(pts.length-1,Math.round((e.clientX-r.left-L)/(W-L-R)*(pts.length-1))));
+      const hv=svg.querySelector('#hv');hv.setAttribute('x1',x(i));hv.setAttribute('x2',x(i));hv.setAttribute('opacity',.3);
+      tip.style.display='block';tip.style.left=x(i)+'px';tip.style.top=y(pts[i][1])+'px';tip.textContent=pts[i][0]+' · '+(opt.f?opt.f(pts[i][1]):num(pts[i][1]))};
+    svg.onpointerleave=()=>{tip.style.display='none';svg.querySelector('#hv')?.setAttribute('opacity',0)}};
+  charts.get(box)?.disconnect();const ro=new ResizeObserver(draw);ro.observe(svg);charts.set(box,ro);draw()}
+
+function agentState(a){if(a.phase==='planned')return'planned';const s=a.status||{};
+  if(s.state==='running')return Date.now()-Date.parse(s.started)>45*60e3?'stuck':'running';
+  if(s.state==='failed')return'failed';if(!s.last_success)return'waiting';
+  return Date.now()-Date.parse(s.last_success)>a.max_age_hours*36e5?'stale':'healthy'}
+const stLabel={healthy:'healthy',running:'running',failed:'failed',stale:'stale',stuck:'stuck',waiting:'awaiting first run',planned:'planned'};
+
+function renderUniverse(){const ks=HEAD.kpis,K=Object.fromEntries(ks.map(k=>[k.id,k]));
+  const eps=K.eps?.points.at(-1),pe=K.pe?.points.at(-1);
+  if(eps&&pe)$('#finding').textContent=`India Co. earns ₹${num(eps[1],0)} a share and trades at ${num(pe[1],1)}x`;
+  const t=SUM.totals;$('#lede').textContent=`${CAT.metrics.length} macro, earnings and flow metrics from DSP's Netra and peer chartbooks. ${t.live} are refreshed by live agents, ${t.snapshot} hold starter data, ${t.recipe} carry a sourcing recipe.`;
+  $('#kpis').innerHTML=ks.map(k=>{const p=k.points.at(-1),s=p[2];const cls=k.sub&&!/pctile/.test(k.sub)?(s>0?'up':'dn'):'';
+    return `<button class="kpi" data-k="${esc(k.id)}" aria-pressed="${k.id===pick}"><div class="l">${esc(k.label)}</div><div class="v num">${esc(fmtK(k,p[1]))}</div><div class="d ${cls}">${esc(subK(k,p))}</div><svg aria-hidden="true" style="color:var(--co2)"></svg><div class="l">${esc(p[0])} · ${esc(AG[k.agent]?.name||k.agent)}</div></button>`}).join('');
+  $('#kpis').querySelectorAll('.kpi').forEach(b=>{spark(b.querySelector('svg'),K[b.dataset.k].points);b.onclick=()=>{pick=b.dataset.k;renderUniverse()}});
+  const k=K[pick];$('#ctitle').textContent=k.label+(k.id==='eps'?' — Nifty 50 trailing EPS':k.id==='fpi'?' — rolling 12-month net equity':'');
+  $('#csrc').textContent=`${AG[k.agent]?.name||k.agent} agent · updated ${ago(k.updated)}`;
+  $('#cnote').textContent=k.id==='eps'?'EPS = index ÷ trailing P/E. The step in March 2021 is NSE moving from standalone to consolidated earnings; the yearly table below splices it out.':'';
+  line($('#main'),k.points,{f:v=>fmtK(k,v)});
+  const E=HEAD.eps_yearly;if(E){const c=E.columns,ix=n=>c.indexOf(n);const rows=E.rows.filter(r=>r[0]==='Latest'||/^CY(20[1-9]\d)|^FY(1[5-9]|2\d)/.test(r[0]));
+    const cy=rows.filter(r=>r[0].startsWith('CY')).slice(-8),fy=rows.filter(r=>r[0].startsWith('FY')).slice(-6),la=rows.filter(r=>r[0]==='Latest');
+    $('#epsT tbody').innerHTML=[...cy,...fy,...la].map(r=>{const g=r[ix('eps_growth_pct')];return `<tr><td>${esc(r[0])}${r[0]==='Latest'?' ('+esc(r[ix('month_end')])+')':''}</td><td class="n">${esc(num(r[ix('eps_consolidated_basis')],0))}</td><td class="n ${g>0?'up':g<0?'dn':''}">${esc(sgn(g))}</td><td class="n">${esc(num(r[ix('pe')],1))}x</td><td class="n">${esc(num(r[ix('implied_roe_pct')],1))}%</td></tr>`}).join('');
+    $('#epsnote').textContent='Nifty 50 EPS on a consolidated basis throughout. '+(E.note||'')}
+  const S=HEAD.snapshot;if(S){const c=S.columns,ix=n=>c.indexOf(n);
+    $('#snapT tbody').innerHTML=S.rows.slice().sort((a,b)=>b[ix('pe')]-a[ix('pe')]).map(r=>{const p=r[ix('pe_pctile_full_hist')],e=r[ix('eps_yoy_pct')];
+      return `<tr><td>${esc(nm(r[0]))}</td><td class="n">${esc(num(r[ix('pe')],1))}</td><td><div class="bar" title="${esc(Math.round(p))} percentile"><i style="width:${Math.max(2,Math.min(100,p||0))}%"></i></div></td><td class="n">${esc(num(r[ix('pe_10y_median')],1))}</td><td class="n">${esc(num(r[ix('pb')],2))}</td><td class="n">${esc(num(r[ix('implied_roe_pct')],1))}%</td><td class="n ${e>0?'up':e<0?'dn':''}">${esc(sgn(e))}</td></tr>`}).join('');
+    $('#snapnote').textContent=(S.note||'')+' · bar = where today’s P/E sits in that index’s own month-end history (0 = cheapest, 100 = dearest).'}
+  renderMetrics()}
+
+let open=null;
+function renderMetrics(){const q=$('#q').value.trim().toLowerCase(),fs=$('#fsec').value,ft=$('#fst').value,fo=$('#fown').value;
+  const rows=CAT.metrics.filter(m=>(!fs||m.section===fs)&&(!ft||m.status===ft)&&(!fo||m.owner===fo)&&(!q||[m.metric,m.definition,m.free_source,m.paid_source,m.gotcha,m.latest_text].join(' ').toLowerCase().includes(q)));
+  $('#mcount').textContent=`${rows.length} of ${CAT.metrics.length} metrics`;
+  let h='',sec='';for(const m of rows.slice(0,400)){if(m.section!==sec&&!fs){sec=m.section;h+=`<tr><td colspan="5"><h3 style="margin-top:14px">${esc(sec)}</h3></td></tr>`}
+    h+=`<tr class="m" data-id="${esc(m.id)}" tabindex="0"><td>${esc(m.metric)}</td><td>${esc(m.latest_text)}</td><td>${esc(AG[m.owner]?.name||'—')}</td><td><span class="pill s-${esc(m.status)}">${esc(m.status)}</span></td><td>${esc(m.frequency)}</td></tr>`;
+    if(open===m.id)h+=`<tr class="det"><td colspan="5"><div class="det"><dl><dt>Definition</dt><dd>${esc(m.definition)}</dd><dt>Free source</dt><dd>${esc(m.free_source)}</dd><dt>Paid source</dt><dd>${esc(m.paid_source||'—')}</dd><dt>History from</dt><dd>${esc(m.history)}</dd><dt>Gotchas</dt><dd>${esc(m.gotcha||'—')}</dd><dt>In Netra</dt><dd>${esc(m.netra||'—')}</dd>${m.also_used_by?`<dt>Also used by</dt><dd>${esc(m.also_used_by)}</dd>`:''}${m.dataset?`<dt>Dataset</dt><dd><a href="data/series/${esc(m.dataset)}.json">${esc(m.dataset)}.json</a>${m.column?' · column '+esc(m.column):''}${m.index?' · '+esc(m.index):''}</dd>`:''}</dl>${m.column?'<div class="fig" id="mfig" style="min-height:240px"><svg aria-hidden="true"></svg><div class="tip"></div></div>':''}</div></td></tr>`}
+  $('#mT tbody').innerHTML=h||'<tr><td colspan="5">No metric matches. Clear a filter or try a source name like “NSDL” or “FRED”.</td></tr>';
+  if(open){const m=CAT.metrics.find(x=>x.id===open);if(m?.column)get('data/series/'+m.dataset+'.json').then(s=>{const c=s.columns,ci=c.indexOf(m.column),ii=c.indexOf('index');
+    const pts=s.rows.filter(r=>(ii<0||r[ii]===m.index)&&r[ci]!=null).map(r=>[r[0],r[ci]]);if($('#mfig')&&pts.length>1)line($('#mfig'),pts)}).catch(()=>{})}}
+
+function renderControl(){const A=SUM.agents,states=A.map(a=>[a,agentState(a)]);const c=k=>states.filter(s=>s[1]===k).length;
+  const live=A.filter(a=>a.phase==='live').length;
+  $('#cfind').textContent=c('failed')+c('stuck')?`${c('failed')+c('stuck')} of ${live} live agents need attention`:c('running')?`${c('running')} agent${c('running')>1?'s':''} working now, ${live} live in total`:`All ${live} live agents ${c('waiting')===live?'are set up and waiting for their first run':'are healthy'}`;
+  $('#sum').innerHTML=[['Live',live],['Running',c('running')],['Healthy',c('healthy')],['Failed',c('failed')+c('stuck')],['Stale',c('stale')],['Planned',c('planned')],['Metrics live',SUM.totals.live]].map(([l,v])=>`<div><b>${esc(v)}</b><span class="note">${esc(l)}</span></div>`).join('');
+  const repo=SUM.repo;
+  $('#board').innerHTML=states.sort((x,y)=>(x[0].phase==='planned')-(y[0].phase==='planned')).map(([a,st])=>{const s=a.status||{},m=a.metrics||{};
+    const gh=a.runner==='github-actions',runs=(a.runs||[]).slice(0,30).reverse();
+    const run=a.phase==='planned'?'':gh?`<a class="btn p" href="https://github.com/${esc(repo)}/actions/workflows/${esc(a.workflow)}">Run now</a><a class="btn" href="https://github.com/${esc(repo)}/actions/workflows/${esc(a.workflow)}">Logs</a>`:`<button class="btn p" data-copy="Run the ${esc(a.name)} agent for netra-data-universe now">Copy ask for Claude</button>`;
+    return `<article class="agent ${a.phase==='live'?'live':''}"><div class="top"><h3>${esc(a.name)}</h3><span class="pill s-${st}">${esc(stLabel[st])}</span><span class="runner">${gh?'GitHub Actions':'Claude'}${a.requires_pc?' · needs your PC':''}</span></div>
+    <p class="note" style="margin:0">${esc(a.role)}</p>
+    ${a.phase==='live'?`<div class="now"><b>Now:</b> ${esc(st==='waiting'?'Waiting for its first scheduled run':s.task||'Idle')}</div>
+    <div class="facts"><div><span>Last run</span><b>${esc(ago(s.finished))}${s.duration_s?' · '+esc(dur(s.duration_s)):''}</b></div><div><span>Next run</span><b>${esc(s.next_run?until(s.next_run):a.schedule)}</b></div>
+    <div><span>Data through</span><b>${esc(s.data_through||'—')}</b></div><div><span>Rows updated</span><b>${esc(s.rows_updated??'—')}</b></div>
+    <div><span>Schedule</span><b>${esc(a.schedule)}</b></div>${(m.live||0)+(m.snapshot||0)+(m.recipe||0)?`<div><span>Metrics owned</span><b>${esc((m.live||0)+(m.snapshot||0)+(m.recipe||0))} · ${esc(m.live||0)} live</b></div>`:''}</div>
+    ${s.message?`<div class="note">${esc(s.message)}</div>`:''}${s.error?`<div class="err">${esc(s.error)}</div>`:''}
+    ${runs.length?`<div><span class="note">Last ${runs.length} runs</span><div class="runs">${runs.map(r=>r.url&&/^https:\/\//.test(r.url)?`<a class="${esc(r.outcome)}" href="${esc(r.url)}" title="${esc(when(r.finished)+' · '+r.outcome+' · '+(r.message||''))}"></a>`:`<i class="${esc(r.outcome)}" title="${esc(when(r.finished)+' · '+r.outcome)}"></i>`).join('')}</div></div>`:''}`
+    :`<div class="facts"><div><span>Will run</span><b>${esc(a.schedule||'—')}</b></div><div><span>Metrics waiting</span><b>${esc((m.snapshot||0)+(m.recipe||0))}</b></div></div><div class="note">Sources: ${esc((a.sources||[]).join('; '))}</div>`}
+    <div class="acts">${run}</div></article>`}).join('');
+  $('#board').querySelectorAll('[data-copy]').forEach(b=>b.onclick=()=>navigator.clipboard.writeText(b.dataset.copy).then(()=>{b.textContent='Copied — paste in Claude'},()=>{b.textContent=b.dataset.copy}));
+  const ev=SUM.events||[];$('#feed').innerHTML=ev.length?ev.slice(0,30).map(e=>`<li><time>${esc(when(e.t))}</time><span><b>${esc(AG[e.agent]?.name||e.agent)}</b> · ${esc(e.text)}</span></li>`).join(''):'<li><span>No activity yet. Each agent run posts what changed here.</span></li>';
+  const all=A.flatMap(a=>(a.runs||[]).map(r=>({...r,agent:a.name}))).sort((x,y)=>Date.parse(y.finished||0)-Date.parse(x.finished||0)).slice(0,40);
+  $('#runT tbody').innerHTML=all.length?all.map(r=>`<tr><td>${esc(when(r.finished))}</td><td>${esc(r.agent)}</td><td><span class="pill s-${r.outcome==='ok'?'healthy':'failed'}">${esc(r.outcome)}</span></td><td>${esc(r.trigger)}</td><td class="n">${esc(r.rows??'')}</td><td>${r.url&&/^https:\/\//.test(r.url)?`<a href="${esc(r.url)}">log</a> `:''}${esc((r.message||'').slice(0,90))}</td></tr>`).join(''):'<tr><td colspan="6">No runs recorded yet.</td></tr>'}
+
+function route(){const c=location.hash==='#control-room';$('#v-universe').hidden=c;$('#v-control').hidden=!c;
+  $('#t-universe').setAttribute('aria-current',c?'false':'page');$('#t-control').setAttribute('aria-current',c?'page':'false');
+  if(SUM)(c?renderControl:renderUniverse)()}
+window.addEventListener('hashchange',route);
+['#q','#fsec','#fst','#fown'].forEach(s=>$(s).addEventListener('input',()=>{open=null;renderMetrics()}));
+$('#mT').addEventListener('click',e=>{const tr=e.target.closest('tr.m');if(!tr)return;open=open===tr.dataset.id?null:tr.dataset.id;renderMetrics()});
+$('#mT').addEventListener('keydown',e=>{if(e.key==='Enter'){const tr=e.target.closest('tr.m');if(tr){open=open===tr.dataset.id?null:tr.dataset.id;renderMetrics()}}});
+async function load(){try{[CAT,SUM,HEAD]=await Promise.all([get('data/catalog.json'),get('status/summary.json'),get('data/headline.json')]);
+  AG=Object.fromEntries(SUM.agents.map(a=>[a.id,a]));
+  if(!$('#fsec').options[1]){[...new Set(CAT.metrics.map(m=>m.section))].forEach(s=>$('#fsec').add(new Option(s,s)));SUM.agents.forEach(a=>$('#fown').add(new Option(a.name,a.id)))}
+  $('#stamp').textContent='Updated '+ago(SUM.updated);route()}
+  catch(e){$('#stamp').textContent='Could not load data';$('#finding').textContent='Data files did not load';$('#lede').textContent='This page reads data/ and status/ beside it. Open it from GitHub Pages or the published artifact, not as a local file. ('+e.message+')'}}
+load();setInterval(load,5*60e3);
+}</script></body></html>

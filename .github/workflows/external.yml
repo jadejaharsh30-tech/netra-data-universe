@@ -1,0 +1,41 @@
+name: "Agent · External & Rupee"
+on:
+  schedule:
+    - cron: "53 1 * * 1-5"
+  push:
+    branches: [main]
+    paths: ["workers/external.py", "workers/common.py", "requirements.txt"]
+  workflow_dispatch:
+    inputs:
+      reason:
+        description: "Why are you running it? (shows in the Control Room)"
+        required: false
+        default: "manual run"
+permissions:
+  contents: write
+concurrency:
+  group: repo-writer
+  cancel-in-progress: false
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+      - run: pip install -q -r requirements.txt
+      - name: Mark running
+        run: |
+          python -m workers.status start external "Starting (${{ github.event_name }}: ${{ inputs.reason || 'schedule' }})"
+          python -m workers.catalog
+          bash scripts/commit.sh "external: running"
+      - name: Run agent
+        run: python -m workers.external
+      - name: Publish
+        if: always()
+        run: |
+          python -m workers.catalog
+          bash scripts/commit.sh "external: run ${{ github.run_id }}"
