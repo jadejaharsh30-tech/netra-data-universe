@@ -19,6 +19,9 @@ concurrency:
 jobs:
   run:
     runs-on: ubuntu-latest
+    env:
+      PYTHONUNBUFFERED: "1"
+      FRED_API_KEY: ${{ secrets.FRED_API_KEY }}
     timeout-minutes: 25
     steps:
       - uses: actions/checkout@v4

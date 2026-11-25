@@ -1,6 +1,6 @@
 """External & Rupee agent: USD/INR, BIS REER/NEER (India + EM peers), India-US rates, real rates, EM FX volatility.
 Source: FRED (fredgraph.csv, no key). India CPI after FRED's OECD series ends falls back to the frozen TradingView seed."""
-import io, sys
+import io, os, sys
 import numpy as np, pandas as pd
 from .common import STORE, run_agent, session, write_series, set_status
 
@@ -8,13 +8,24 @@ AGENT = "external"
 SERIES = ["DEXINUS", "EXINUS", "RBINBIS", "NBINBIS", "INDIRLTLT01STM", "GS10", "CPIAUCSL", "DFII10", "INDCPIALLMINMEI",
           "DEXKOUS", "DEXBZUS", "DEXCHUS", "DEXTAUS", "RBCNBIS", "RBKRBIS", "RBTWBIS", "RBBRBIS"]
 URL = "https://fred.stlouisfed.org/graph/fredgraph.csv?id={}"
+API = "https://api.stlouisfed.org/fred/series/observations?series_id={}&api_key={}&file_type=json&observation_start=2000-01-01"
+KEY = os.environ.get("FRED_API_KEY", "").strip()
 
 
 def pull(s, sid):
-    r = s.get(URL.format(sid), timeout=40)
-    r.raise_for_status()
-    df = pd.read_csv(io.StringIO(r.text))
-    df.columns = ["observation_date", sid]
+    if KEY:  # official API: reliable from cloud runners; free key from fredaccount.stlouisfed.org
+        r = s.get(API.format(sid, KEY), timeout=20)
+        r.raise_for_status()
+        df = pd.DataFrame(r.json()["observations"])[["date", "value"]]
+        df.columns = ["observation_date", sid]
+        old = pd.read_csv(STORE / "fred" / f"{sid}.csv")
+        old = old[old["observation_date"] < df["observation_date"].min()]
+        df = pd.concat([old.astype({sid: str}), df.astype({sid: str})])
+    else:
+        r = s.get(URL.format(sid), timeout=20)
+        r.raise_for_status()
+        df = pd.read_csv(io.StringIO(r.text))
+        df.columns = ["observation_date", sid]
     df[sid] = pd.to_numeric(df[sid], errors="coerce")
     return df.dropna()
 
@@ -30,13 +41,18 @@ def m(s, how="last"):
 
 
 def main():
-    s = session(); rows, fails, latest = 0, [], {}
-    for sid in SERIES:
-        set_status(AGENT, task=f"Pulling FRED {sid}")
+    s = session(retries=1); rows, fails, latest = 0, [], {}
+    for n, sid in enumerate(SERIES):
+        set_status(AGENT, task=f"Pulling FRED {sid}" + (" (API)" if KEY else ""))
         try:
             new = pull(s, sid)
         except Exception as e:
-            fails.append(f"{sid}: {type(e).__name__}"); continue
+            fails.append(f"{sid}: {type(e).__name__}: {str(e)[:120]}")
+            print(fails[-1], flush=True)
+            if n == 2 and len(fails) == 3:
+                raise RuntimeError("FRED not answering from this runner (first 3 series failed). "
+                                   + ("" if KEY else "Add a free FRED_API_KEY repo secret to use the official API. ") + fails[0])
+            continue
         p = STORE / "fred" / f"{sid}.csv"
         old = pd.read_csv(p) if p.exists() else new.iloc[:0]
         rows += max(0, len(new) - len(old))

@@ -28,12 +28,12 @@ def registry():
     return {a["id"]: a for a in rj(ROOT / "agents" / "registry.json")["agents"]}
 
 
-def session():
+def session(retries=3):
     import requests
     from requests.adapters import HTTPAdapter, Retry
     s = requests.Session()
     s.headers.update({"User-Agent": UA, "Accept": "*/*", "Accept-Language": "en-US,en;q=0.9"})
-    s.mount("https://", HTTPAdapter(max_retries=Retry(total=3, backoff_factor=2, status_forcelist=[429, 500, 502, 503, 504])))
+    s.mount("https://", HTTPAdapter(max_retries=Retry(total=retries, backoff_factor=2, status_forcelist=[429, 500, 502, 503, 504])))
     return s
 
 

@@ -75,7 +75,7 @@ def main():
     if changed:
         ev.append({"kind": "data", "text": f"FPI equity {last['month']} so far ${last['eq_usd_mn'] / 1000:+.2f}bn; "
                                            f"12M rolling ${full['eq_usd_bn_roll12m']:+.1f}bn (pctile {full['roll12m_pctile']:.0f})"})
-    if full["roll12m_pctile"] <= 5:
+    if changed and full["roll12m_pctile"] <= 5:
         ev.append({"kind": "extreme", "text": f"12M FPI equity outflow in bottom 5% of history ({full['month']})"})
     return {"rows": changed, "message": f"{changed} month(s) updated; {upto or ''}".strip("; "), "data_through": last["month"], "events": ev}
 
