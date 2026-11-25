@@ -168,7 +168,7 @@ def build():
         counts.setdefault(r["owner"] or "unassigned", {"live": 0, "snapshot": 0, "recipe": 0})[r["status"]] += 1
     summary = {"updated": now(), "repo": rj(ROOT / "agents" / "registry.json")["repo"],
                "agents": [{**reg[a], "status": statuses[a], "runs": runs[a], "metrics": counts.get(a, {})} for a in reg],
-               "events": (rj(DATA / "events.json", []) or [])[:60],
+               "events": sorted((e for f in (DATA / "events").glob("*.json") for e in (rj(f, []) or [])), key=lambda e: e["t"], reverse=True)[:60],
                "totals": {k: sum(c[k] for c in counts.values()) for k in ("live", "snapshot", "recipe")}}
     wj(STATUS / "summary.json", summary, 1)
     headline(reg)

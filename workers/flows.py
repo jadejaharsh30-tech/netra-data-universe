@@ -1,5 +1,5 @@
 """Flows agent: FPI net investment, monthly, from NSDL (fpi.nsdl.co.in Yearwise report, INR and USD)."""
-import io, sys
+import io, re, sys
 from datetime import datetime
 import pandas as pd
 from bs4 import BeautifulSoup
@@ -19,13 +19,15 @@ def year_table(s, year, cur):
     out, upto = {}, None
     for tr in soup.select("table tr"):
         c = [td.get_text(strip=True).replace(",", "") for td in tr.find_all(["td", "th"])]
-        if c and c[0] in MONTHS and len(c) >= 3:
+        name = re.sub(r"[^A-Za-z]", "", c[0]) if c else ""
+        if name in MONTHS and len(c) >= 3:
             try:
-                out[f"{year}{MONTHS.index(c[0]) + 1:02d}"] = (float(c[1]), float(c[-1]))  # (equity, total)
+                out[f"{year}{MONTHS.index(name) + 1:02d}"] = (float(c[1]), float(c[-1]))  # (equity, total)
             except ValueError:
                 pass
-        if c and "up to" in c[0].lower():
-            upto = c[0].strip("* ")
+        mm = re.search(r"up to (\d{1,2} \w{3} \d{4})", c[0]) if c else None
+        if mm:
+            upto = "up to " + mm.group(1)
     if not out:
         raise RuntimeError(f"NSDL {year} {cur}: no monthly rows parsed — page layout may have changed")
     return out, upto

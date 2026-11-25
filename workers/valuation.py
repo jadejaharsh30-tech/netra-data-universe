@@ -39,6 +39,11 @@ def fetch_new(store):
             elif r.status_code == 403:
                 raise RuntimeError("NSE archive refused the request (HTTP 403) — runner IP likely blocked")
         d += timedelta(days=1)
+    if tried == 0:  # nothing new to fetch: still prove the source answers us
+        set_status(AGENT, task="Checking the NSE archive responds")
+        r = s.get(URL.format(d=last.strftime("%d%m%Y")), timeout=30)
+        if r.status_code == 403:
+            raise RuntimeError("NSE archive refused the request (HTTP 403) — runner IP likely blocked")
     return pd.DataFrame(rows), got
 
 

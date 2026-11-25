@@ -81,7 +81,7 @@ def add_run(agent, rec, keep=60):
 def add_events(agent, events, keep=200):
     if not events:
         return
-    p = DATA / "events.json"
+    p = DATA / "events" / f"{agent}.json"
     ev = rj(p, [])
     for e in events:
         ev.insert(0, {"t": now(), "agent": agent, **e})

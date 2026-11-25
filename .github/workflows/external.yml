@@ -14,7 +14,7 @@ on:
 permissions:
   contents: write
 concurrency:
-  group: repo-writer
+  group: agent-external
   cancel-in-progress: false
 jobs:
   run:
