@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-25T18:03:06+00:00",
+ "updated": "2026-11-25T18:03:09+00:00",
  "repo": "jadejaharsh30-tech/netra-data-universe",
  "agents": [
   {
@@ -110,11 +110,11 @@
    "role": "FPI net equity and total flows by month in USD and INR; 3/12/24-month rolling sums with z-scores and percentiles.",
    "status": {
     "id": "flows",
-    "state": "ok",
-    "task": "Idle — waiting for next schedule",
-    "started": "2026-11-25T17:57:38+00:00",
+    "state": "running",
+    "task": "Starting (push: schedule)",
+    "started": "2026-11-25T18:03:03+00:00",
     "error": null,
-    "updated": "2026-11-25T17:57:43+00:00",
+    "updated": "2026-11-25T18:03:03+00:00",
     "finished": "2026-11-25T17:57:43+00:00",
     "last_success": "2026-11-25T17:57:43+00:00",
     "duration_s": 5.3,
