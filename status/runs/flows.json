@@ -1,0 +1,12 @@
+[
+ {
+  "started": "2026-11-25T17:54:56+00:00",
+  "trigger": "code change",
+  "url": "https://github.com/jadejaharsh30-tech/netra-data-universe/actions/runs/45669673991",
+  "outcome": "ok",
+  "finished": "2026-11-25T17:55:01+00:00",
+  "duration_s": 4.5,
+  "rows": 0,
+  "message": "0 month(s) updated; The data presented above is compiled on the basis of reports submitted to SEBI/Depositories by Custodians and constitutes trades conducted by FPIs on and up to the previous trading day(s)."
+ }
+]
