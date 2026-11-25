@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-25T17:57:43+00:00",
+ "updated": "2026-11-25T17:57:45+00:00",
  "repo": "jadejaharsh30-tech/netra-data-universe",
  "agents": [
   {
@@ -169,7 +169,11 @@
    "role": "USD/INR, BIS REER/NEER for India and EM peers, India–US 10Y spread, real rates, inflation differential, EM FX volatility.",
    "status": {
     "id": "external",
-    "state": "pending"
+    "state": "running",
+    "task": "Starting (push: schedule)",
+    "started": "2026-11-25T17:57:40+00:00",
+    "error": null,
+    "updated": "2026-11-25T17:57:40+00:00"
    },
    "runs": [],
    "metrics": {
