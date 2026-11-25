@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-25T17:57:28+00:00",
+ "updated": "2026-11-25T17:57:31+00:00",
  "repo": "jadejaharsh30-tech/netra-data-universe",
  "agents": [
   {
@@ -33,14 +33,14 @@
    "role": "P/E, P/B, dividend yield, EPS, ROE and percentiles for 24 Nifty indices; India Co. EPS by CY/FY with the 2021 consolidation splice.",
    "status": {
     "id": "valuation",
-    "state": "running",
-    "task": "Starting (push: schedule)",
-    "started": "2026-11-25T17:57:28+00:00",
+    "state": "ok",
+    "task": "Idle — waiting for next schedule",
+    "started": "2026-11-25T17:57:30+00:00",
     "error": null,
-    "updated": "2026-11-25T17:57:28+00:00",
-    "finished": "2026-11-25T17:55:24+00:00",
-    "last_success": "2026-11-25T17:55:24+00:00",
-    "duration_s": 0.4,
+    "updated": "2026-11-25T17:57:31+00:00",
+    "finished": "2026-11-25T17:57:31+00:00",
+    "last_success": "2026-11-25T17:57:31+00:00",
+    "duration_s": 0.7,
     "rows_updated": 0,
     "message": "No new NSE file yet; data through 25-Nov-2026",
     "data_through": "2026-11-25",
@@ -48,6 +48,16 @@
     "next_run": "2026-11-26T02:23:00+00:00"
    },
    "runs": [
+    {
+     "started": "2026-11-25T17:57:30+00:00",
+     "trigger": "code change",
+     "url": "https://github.com/jadejaharsh30-tech/netra-data-universe/actions/runs/45670111637",
+     "outcome": "ok",
+     "finished": "2026-11-25T17:57:31+00:00",
+     "duration_s": 0.7,
+     "rows": 0,
+     "message": "No new NSE file yet; data through 25-Nov-2026"
+    },
     {
      "started": "2026-11-25T17:55:24+00:00",
      "trigger": "code change",
