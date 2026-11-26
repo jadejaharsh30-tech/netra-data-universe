@@ -1,5 +1,11 @@
 [
  {
+  "t": "2026-11-26T10:08:05+00:00",
+  "agent": "external",
+  "kind": "failure",
+  "text": "RuntimeError: FRED not answering from this runner (first 3 series failed). Add a free FRED_API_KEY repo secret to use the official API. DEXINUS: ConnectionError: HTTPSConnectionPool(host='fred.stlouisfed.org', port=443): Max retries exceeded with url: /graph/fredgraph.csv?id=DEXINU"
+ },
+ {
   "t": "2026-11-25T18:05:22+00:00",
   "agent": "external",
   "kind": "failure",
