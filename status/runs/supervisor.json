@@ -1,0 +1,11 @@
+[
+ {
+  "started": "2026-11-26T14:30:00+00:00",
+  "finished": "2026-11-26T14:36:02+00:00",
+  "outcome": "ok",
+  "rows": 0,
+  "message": "2 healthy, 1 blocked (external: FRED times out from GitHub runners, needs FRED_API_KEY), 0 anomalies",
+  "trigger": "local",
+  "url": null
+ }
+]

@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-26T13:06:40+00:00",
+ "updated": "2026-11-26T14:36:02+00:00",
  "repo": "jadejaharsh30-tech/netra-data-universe",
  "agents": [
   {
@@ -293,9 +293,28 @@
    "trigger_id": "trig_01EqajeX8EzoijFyfwaW59BE",
    "status": {
     "id": "supervisor",
-    "state": "pending"
+    "state": "ok",
+    "task": "Idle — waiting for next schedule",
+    "started": "2026-11-26T14:30:00+00:00",
+    "error": null,
+    "updated": "2026-11-26T14:36:02+00:00",
+    "finished": "2026-11-26T14:36:02+00:00",
+    "message": "2 healthy, 1 blocked (external: FRED times out from GitHub runners, needs FRED_API_KEY), 0 anomalies",
+    "rows_updated": 0,
+    "next_run": "2026-11-27T14:29:00+00:00",
+    "last_success": "2026-11-26T14:36:02+00:00"
    },
-   "runs": [],
+   "runs": [
+    {
+     "started": "2026-11-26T14:30:00+00:00",
+     "finished": "2026-11-26T14:36:02+00:00",
+     "outcome": "ok",
+     "rows": 0,
+     "message": "2 healthy, 1 blocked (external: FRED times out from GitHub runners, needs FRED_API_KEY), 0 anomalies",
+     "trigger": "local",
+     "url": null
+    }
+   ],
    "metrics": {}
   },
   {
@@ -464,6 +483,18 @@
   }
  ],
  "events": [
+  {
+   "t": "2026-11-26T14:36:02+00:00",
+   "agent": "supervisor",
+   "kind": "check",
+   "text": "Sanity OK: India Co. P/E 21.03 (Nov; matches NSE Nifty 50 25-Nov), EPS +2.8% m/m, FPI 12M $-34.4bn (Oct), REER 91.3 (Oct). Valuation 19:07 IST run not yet in (GitHub cron delay); last success 16:32 IST."
+  },
+  {
+   "t": "2026-11-26T14:36:02+00:00",
+   "agent": "supervisor",
+   "kind": "blocked",
+   "text": "external: FRED (fred.stlouisfed.org fredgraph.csv) read-times-out on every series from GitHub runners, 2 runs in a row (25-Nov 23:33, 26-Nov 15:36 IST). No code change. Fix: add free FRED_API_KEY repo secret (worker already supports the official API)."
+  },
   {
    "t": "2026-11-26T13:06:40+00:00",
    "agent": "flows",
