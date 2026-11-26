@@ -1,16 +1,16 @@
 {
  "id": "valuation",
- "state": "running",
- "task": "Starting (schedule: schedule)",
- "started": "2026-11-26T22:33:25+00:00",
+ "state": "ok",
+ "task": "Idle — waiting for next schedule",
+ "started": "2026-11-26T22:33:26+00:00",
  "error": null,
- "updated": "2026-11-26T22:33:25+00:00",
- "finished": "2026-11-26T11:02:05+00:00",
- "last_success": "2026-11-26T11:02:05+00:00",
- "duration_s": 0.5,
- "rows_updated": 0,
- "message": "No new NSE file yet; data through 25-Nov-2026",
- "data_through": "2026-11-25",
+ "updated": "2026-11-26T22:33:27+00:00",
+ "finished": "2026-11-26T22:33:27+00:00",
+ "last_success": "2026-11-26T22:33:27+00:00",
+ "duration_s": 1.1,
+ "rows_updated": 24,
+ "message": "1 new day(s); data through 26-Nov-2026",
+ "data_through": "2026-11-26",
  "warnings": [],
- "next_run": "2026-11-26T13:37:00+00:00"
+ "next_run": "2026-11-27T02:23:00+00:00"
 }
