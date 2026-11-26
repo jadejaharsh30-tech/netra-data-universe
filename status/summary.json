@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-26T10:08:05+00:00",
+ "updated": "2026-11-26T11:02:03+00:00",
  "repo": "jadejaharsh30-tech/netra-data-universe",
  "agents": [
   {
@@ -33,11 +33,11 @@
    "role": "P/E, P/B, dividend yield, EPS, ROE and percentiles for 24 Nifty indices; India Co. EPS by CY/FY with the 2021 consolidation splice.",
    "status": {
     "id": "valuation",
-    "state": "ok",
-    "task": "Idle — waiting for next schedule",
-    "started": "2026-11-25T18:03:05+00:00",
+    "state": "running",
+    "task": "Starting (schedule: schedule)",
+    "started": "2026-11-26T11:02:03+00:00",
     "error": null,
-    "updated": "2026-11-25T18:03:06+00:00",
+    "updated": "2026-11-26T11:02:03+00:00",
     "finished": "2026-11-25T18:03:06+00:00",
     "last_success": "2026-11-25T18:03:06+00:00",
     "duration_s": 0.7,
