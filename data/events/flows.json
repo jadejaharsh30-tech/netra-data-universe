@@ -1,5 +1,17 @@
 [
  {
+  "t": "2026-11-26T13:06:40+00:00",
+  "agent": "flows",
+  "kind": "extreme",
+  "text": "12M FPI equity outflow in bottom 5% of history (2026-10)"
+ },
+ {
+  "t": "2026-11-26T13:06:40+00:00",
+  "agent": "flows",
+  "kind": "data",
+  "text": "FPI equity 2026-11 so far $+15.48bn; 12M rolling $-34.3bn (pctile 1)"
+ },
+ {
   "t": "2026-11-25T17:57:43+00:00",
   "agent": "flows",
   "kind": "extreme",
