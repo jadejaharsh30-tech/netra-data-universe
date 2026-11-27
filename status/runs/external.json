@@ -1,5 +1,15 @@
 [
  {
+  "started": "2026-11-27T10:11:45+00:00",
+  "trigger": "schedule",
+  "url": "https://github.com/jadejaharsh30-tech/netra-data-universe/actions/runs/45979967978",
+  "outcome": "failed",
+  "finished": "2026-11-27T10:13:45+00:00",
+  "duration_s": 120.4,
+  "rows": 0,
+  "message": "RuntimeError: FRED not answering from this runner (first 3 series failed). Add a free FRED_API_KEY repo secret to use the official API. DEXINUS: ConnectionError: HTTPSConnectionPool(host='fred.stlouisfed.org', port=443): Max retries exceeded with url: /graph/fredgraph.csv?id=DEXINU"
+ },
+ {
   "started": "2026-11-26T10:06:04+00:00",
   "trigger": "schedule",
   "url": "https://github.com/jadejaharsh30-tech/netra-data-universe/actions/runs/45798091745",
