@@ -1,5 +1,17 @@
 [
  {
+  "t": "2026-11-27T14:30:58+00:00",
+  "agent": "supervisor",
+  "kind": "check",
+  "text": "Sanity OK: India Co. P/E 21.08 (Nov), EPS 1228 (+2.8% m/m), FPI 12M $-34.4bn (Oct), REER 91.3 (Oct). Valuation 19:07 IST run not yet in (GitHub cron delay); last success 16:29 IST."
+ },
+ {
+  "t": "2026-11-27T14:30:58+00:00",
+  "agent": "supervisor",
+  "kind": "blocked",
+  "text": "external: FRED (fredgraph.csv) still read-times-out on every series from GitHub runners, 3 runs in a row (latest 27-Nov 15:41 IST). No code change. Fix: add free FRED_API_KEY repo secret (worker already uses the official API when set). Last good data 25-Nov; REER/USD-INR through Oct."
+ },
+ {
   "t": "2026-11-26T14:36:02+00:00",
   "agent": "supervisor",
   "kind": "check",
